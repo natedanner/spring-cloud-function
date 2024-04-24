@@ -217,7 +217,7 @@ public final class CloudEventMessageUtils {
 	public static Map<String, Object> getAttributes(Message<?> message) {
 		return message.getHeaders().entrySet().stream()
 				.filter(e -> isAttribute(e.getKey()))
-				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 
 	/**
@@ -308,7 +308,7 @@ public final class CloudEventMessageUtils {
 				Object value = headers.remove(key);
 				String newKey = DEFAULT_ATTR_PREFIX + key.substring(DEFAULT_ATTR_PREFIX.length());
 				headers.put(newKey, value);
-				modified |= (!Objects.equals(key, newKey));
+				modified |= !Objects.equals(key, newKey);
 			}
 			else if (key.startsWith(KAFKA_ATTR_PREFIX)) {
 				Object value = headers.remove(key);

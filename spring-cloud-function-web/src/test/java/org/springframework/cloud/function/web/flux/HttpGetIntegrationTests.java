@@ -315,7 +315,7 @@ public class HttpGetIntegrationTests {
 		@Bean
 		public Supplier<Flux<String>> bang() {
 			return () -> Flux.fromArray(new String[] { "foo", "bar" }).map(value -> {
-				if (value.equals("bar")) {
+				if ("bar".equals(value)) {
 					throw new RuntimeException("Bar");
 				}
 				return value;
@@ -339,9 +339,8 @@ public class HttpGetIntegrationTests {
 
 		@Bean
 		public Supplier<Flux<String>> timeout() {
-			return () -> Flux.defer(() -> Flux.<String>create(emitter -> {
-				emitter.next("foo");
-			}).timeout(Duration.ofMillis(100L), Flux.empty()));
+			return () -> Flux.defer(() -> Flux.<String>create(emitter ->
+				emitter.next("foo")).timeout(Duration.ofMillis(100L), Flux.empty()));
 		}
 
 		@Bean

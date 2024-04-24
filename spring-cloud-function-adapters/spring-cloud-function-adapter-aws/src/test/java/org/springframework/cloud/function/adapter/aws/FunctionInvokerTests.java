@@ -1446,7 +1446,7 @@ public class FunctionInvokerTests {
 	public static class AuthorizerConfiguration {
 		@Bean
 		public Function<APIGatewayCustomAuthorizerEvent, String> acceptAuthorizerEvent() {
-			return v -> v.toString();
+			return APIGatewayCustomAuthorizerEvent::toString;
 		}
 	}
 
@@ -1570,7 +1570,7 @@ public class FunctionInvokerTests {
 
 		@Override
 		protected boolean supports(Class<?> clazz) {
-			return (Person.class.equals(clazz));
+			return Person.class.equals(clazz);
 		}
 
 		@Override
@@ -1590,7 +1590,7 @@ public class FunctionInvokerTests {
 		public Function<String, String> echoString() {
 			return v -> {
 				System.out.println("Received: " + v);
-				return v.toString();
+				return v;
 			};
 		}
 
@@ -1723,7 +1723,7 @@ public class FunctionInvokerTests {
 
 		@Bean
 		public Consumer<String> consume() {
-			return v -> System.out.println(v);
+			return System.out::println;
 		}
 
 		@Bean
@@ -1738,9 +1738,7 @@ public class FunctionInvokerTests {
 
 		@Bean
 		public Function<Person, String> uppercasePojo() {
-			return v -> {
-				return v.getName().toUpperCase();
-			};
+			return v -> v.getName().toUpperCase();
 		}
 
 		@Bean
@@ -1763,9 +1761,7 @@ public class FunctionInvokerTests {
 
 		@Bean
 		public Function<APIGatewayProxyRequestEvent, String> inputApiEvent() {
-			return v -> {
-				return v.getBody();
-			};
+			return APIGatewayProxyRequestEvent::getBody;
 		}
 
 		@Bean
@@ -1773,8 +1769,7 @@ public class FunctionInvokerTests {
 		public Function<InputStream, String> echoInputStreamToString() {
 			return is -> {
 				try {
-					String result = StreamUtils.copyToString(is, StandardCharsets.UTF_8);
-					return result;
+					return StreamUtils.copyToString(is, StandardCharsets.UTF_8);
 				}
 				catch (Exception e) {
 					throw new RuntimeException(e);
@@ -1787,8 +1782,7 @@ public class FunctionInvokerTests {
 		public Function<Message<InputStream>, String> echoInputStreamMsgToString() {
 			return msg -> {
 				try {
-					String result = StreamUtils.copyToString(msg.getPayload(), StandardCharsets.UTF_8);
-					return result;
+					return StreamUtils.copyToString(msg.getPayload(), StandardCharsets.UTF_8);
 				}
 				catch (Exception e) {
 					throw new RuntimeException(e);
@@ -1827,24 +1821,17 @@ public class FunctionInvokerTests {
 
 		@Bean
 		public Function<APIGatewayV2HTTPEvent, String> inputApiV2Event() {
-			return v -> {
-				return v.getBody();
-			};
+			return APIGatewayV2HTTPEvent::getBody;
 		}
 
 		@Bean
 		public Function<Message<APIGatewayProxyRequestEvent>, String> inputApiEventAsMessage() {
-			return v -> {
-				return v.getPayload().getBody();
-			};
+			return v -> v.getPayload().getBody();
 		}
 
 		@Bean
 		public Function<Map<String, Object>, String> inputApiEventAsMap() {
-			return v -> {
-				String body = (String) v.get("body");
-				return body;
-			};
+			return v -> (String) v.get("body");
 		}
 
 		@Bean
@@ -1871,9 +1858,7 @@ public class FunctionInvokerTests {
 	public static class PrimitiveConfiguration {
 		@Bean
 		public Function<Message<byte[]>, byte[]> returnByteArrayAsMessage() {
-			return v -> {
-				return v.getPayload();
-			};
+			return Message::getPayload;
 		}
 	}
 

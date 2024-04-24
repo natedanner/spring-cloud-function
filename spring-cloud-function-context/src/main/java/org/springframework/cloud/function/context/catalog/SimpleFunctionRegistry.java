@@ -619,8 +619,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 		}
 
 		public boolean isInputTypeMessage() {
-			boolean b = this.message || this.isRoutingFunction();
-			return b;
+			return this.message || this.isRoutingFunction();
 		}
 
 		public boolean isOutputTypeMessage() {
@@ -655,7 +654,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 
 			Type composedFunctionType;
 			if (afterWrapper.outputType == null) {
-				composedFunctionType = (this.inputType == null) ?
+				composedFunctionType = this.inputType == null ?
 					ResolvableType.forClassWithGenerics(Supplier.class, ResolvableType.forType(Object.class)).getType() :
 					ResolvableType.forClassWithGenerics(Consumer.class, ResolvableType.forType(this.inputType)).getType();
 			}
@@ -895,9 +894,9 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			Object result;
 			if (!this.isTypePublisher(this.inputType) && convertedInput instanceof Publisher) {
 				result = convertedInput instanceof Mono
-						? Mono.from((Publisher) convertedInput).map(value -> this.invokeFunctionAndEnrichResultIfNecessary(value))
+						? Mono.from((Publisher) convertedInput).map(this::invokeFunctionAndEnrichResultIfNecessary)
 							.doOnError(ex -> logger.error("Failed to invoke function '" + this.functionDefinition + "'", (Throwable) ex))
-						: Flux.from((Publisher) convertedInput).map(value -> this.invokeFunctionAndEnrichResultIfNecessary(value))
+						: Flux.from((Publisher) convertedInput).map(this::invokeFunctionAndEnrichResultIfNecessary)
 							.doOnError(ex -> logger.error("Failed to invoke function '" + this.functionDefinition + "'", (Throwable) ex));
 			}
 			else {
@@ -951,7 +950,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			}
 
 			Object result;
-			if (inputValue != null && inputValue.getClass().getName().equals("org.springframework.kafka.support.KafkaNull")) {
+			if (inputValue != null && "org.springframework.kafka.support.KafkaNull".equals(inputValue.getClass().getName())) {
 				result = ((Function) this.target).apply(null);
 			}
 			else {
@@ -976,7 +975,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 						.isAssignableFrom(Void.class)) {
 
 					if (result instanceof Mono) {
-						return Mono.from((result)).map(v -> {
+						return Mono.from(result).map(v -> {
 							if (firstInputMessage.get() != null && CloudEventMessageUtils
 									.isCloudEvent(firstInputMessage.get())) {
 								return functionInvocationHelper.postProcessResult(v,
@@ -986,7 +985,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 						});
 					}
 					else {
-						return Flux.from((result)).map(v -> {
+						return Flux.from(result).map(v -> {
 							if (firstInputMessage.get() != null && CloudEventMessageUtils
 									.isCloudEvent(firstInputMessage.get())) {
 								return functionInvocationHelper.postProcessResult(v,
@@ -1011,7 +1010,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 				if (convertedInput instanceof Flux) {
 					result = ((Flux) convertedInput)
 							.transform(flux -> {
-								flux =  Flux.from((Publisher) flux).map(v -> this.extractValueFromOriginalValueHolderIfNecessary(v));
+								flux =  Flux.from((Publisher) flux).map(this::extractValueFromOriginalValueHolderIfNecessary);
 								((Consumer) this.target).accept(flux);
 								return Mono.ignoreElements((Flux) flux);
 							}).then();
@@ -1019,7 +1018,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 				else {
 					result = ((Mono) convertedInput)
 							.transform(mono -> {
-								mono =  Mono.from((Publisher) mono).map(v -> this.extractValueFromOriginalValueHolderIfNecessary(v));
+								mono =  Mono.from((Publisher) mono).map(this::extractValueFromOriginalValueHolderIfNecessary);
 								((Consumer) this.target).accept(mono);
 								return Mono.ignoreElements((Mono) mono);
 							}).then();
@@ -1028,10 +1027,10 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			else if (convertedInput instanceof Publisher) {
 				result = convertedInput instanceof Mono
 						? Mono.from((Publisher) convertedInput)
-								.map(v -> this.extractValueFromOriginalValueHolderIfNecessary(v))
+								.map(this::extractValueFromOriginalValueHolderIfNecessary)
 								.doOnNext((Consumer) this.target).then()
 						: Flux.from((Publisher) convertedInput)
-								.map(v -> this.extractValueFromOriginalValueHolderIfNecessary(v))
+								.map(this::extractValueFromOriginalValueHolderIfNecessary)
 								.doOnNext((Consumer) this.target).then();
 			}
 			else {
@@ -1109,7 +1108,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			}
 			else if (input instanceof Message) {
 				input = this.filterOutHeaders((Message) input);
-				if (((Message) input).getPayload().getClass().getName().equals("org.springframework.kafka.support.KafkaNull")) {
+				if ("org.springframework.kafka.support.KafkaNull".equals(((Message) input).getPayload().getClass().getName())) {
 					return input;
 				}
 
@@ -1122,9 +1121,9 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 					convertedInput = this.convertNonMessageInputIfNecessary(type, ((Message) input).getPayload(), false);
 				}
 				if (convertedInput != null && !FunctionTypeUtils.isMultipleArgumentType(this.inputType)) {
-					convertedInput = !convertedInput.equals(input)
-							? new OriginalMessageHolder(convertedInput, (Message<?>) input)
-							: convertedInput;
+					convertedInput = convertedInput.equals(input)
+							? convertedInput
+							: new OriginalMessageHolder(convertedInput, (Message<?>) input);
 				}
 				if (convertedInput != null && logger.isDebugEnabled()) {
 					logger.debug("Converted Message: " + input + " to: " +
@@ -1169,7 +1168,7 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			}
 
 			Object payload = message.getPayload();
-			if ((payload instanceof byte[])) {
+			if (payload instanceof byte[]) {
 				return false;
 			}
 			if (ObjectUtils.isArray(payload)) {
@@ -1391,9 +1390,9 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 			Object[] multipleValueArguments = this.parseMultipleValueArguments(output, outputTypes.length);
 			Object[] convertedOutputs = new Object[outputTypes.length];
 			for (int i = 0; i < multipleValueArguments.length; i++) {
-				String[] ctToUse = !ObjectUtils.isEmpty(contentType)
-						? new String[]{contentType[i]}
-						: new String[] {"application/json"};
+				String[] ctToUse = ObjectUtils.isEmpty(contentType)
+						? new String[] {"application/json"}
+						: new String[]{contentType[i]};
 				Object convertedInput = this.convertOutputIfNecessary(multipleValueArguments[i], outputTypes[i], ctToUse);
 				convertedOutputs[i] = convertedInput;
 			}

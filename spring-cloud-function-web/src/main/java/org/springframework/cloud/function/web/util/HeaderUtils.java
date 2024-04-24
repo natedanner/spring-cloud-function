@@ -37,9 +37,9 @@ public final class HeaderUtils {
 	 */
 	public static final String HTTP_REQUEST_PARAM = "http_request_param";
 
-	private static HttpHeaders IGNORED = new HttpHeaders();
+	private static final HttpHeaders IGNORED = new HttpHeaders();
 
-	private static HttpHeaders REQUEST_ONLY = new HttpHeaders();
+	private static final HttpHeaders REQUEST_ONLY = new HttpHeaders();
 
 	static {
 		IGNORED.add(MessageHeaders.ID, "");
@@ -72,7 +72,7 @@ public final class HeaderUtils {
 
 	@SuppressWarnings("unchecked")
 	public static HttpHeaders fromMessage(MessageHeaders headers) {
-		return fromMessage(headers, Collections.EMPTY_LIST);
+		return fromMessage(headers, Collections.emptyList());
 	}
 
 
@@ -90,7 +90,7 @@ public final class HeaderUtils {
 
 	@SuppressWarnings("unchecked")
 	public static HttpHeaders sanitize(HttpHeaders request) {
-		return sanitize(request, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+		return sanitize(request, Collections.emptyList(), Collections.emptyList());
 	}
 
 	public static MessageHeaders fromHttp(HttpHeaders headers) {

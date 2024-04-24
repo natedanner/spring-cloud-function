@@ -50,7 +50,7 @@ import org.springframework.util.StringUtils;
  */
 public final class FunctionWebRequestProcessingHelper {
 
-	private static Log logger = LogFactory.getLog(FunctionWebRequestProcessingHelper.class);
+	private static final Log logger = LogFactory.getLog(FunctionWebRequestProcessingHelper.class);
 
 	private FunctionWebRequestProcessingHelper() {
 
@@ -148,9 +148,8 @@ public final class FunctionWebRequestProcessingHelper {
 			}
 
 			if (pResult instanceof Flux) {
-				pResult = ((Flux) pResult).onErrorContinue((e, v) -> {
-					logger.error("Failed to process value: " + v, (Throwable) e);
-				}).collectList();
+				pResult = ((Flux) pResult).onErrorContinue((e, v) ->
+					logger.error("Failed to process value: " + v, (Throwable) e)).collectList();
 			}
 			pResult = Mono.from(pResult);
 		}
@@ -160,9 +159,7 @@ public final class FunctionWebRequestProcessingHelper {
 
 		return Mono.from(pResult).map(v -> {
 			if (v instanceof Iterable i) {
-				List aggregatedResult = (List) StreamSupport.stream(i.spliterator(), false).map(m -> {
-					return m instanceof Message ? processMessage(responseOkBuilder, (Message<?>) m, ignoredHeaders) : m;
-				}).collect(Collectors.toList());
+				List aggregatedResult = (List) StreamSupport.stream(i.spliterator(), false).map(m -> m instanceof Message ? processMessage(responseOkBuilder, (Message<?>) m, ignoredHeaders) : m).collect(Collectors.toList());
 				return responseOkBuilder.header("content-type", "application/json").body(aggregatedResult);
 			}
 			else if (v instanceof Message) {

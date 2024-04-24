@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class CustomRuntimeEventLoopTest {
 
-	private String API_EVENT = "{\n"
+	private final String apiEvent = "{\n"
 			+ "    \"version\": \"1.0\",\n"
 			+ "    \"resource\": \"$default\",\n"
 			+ "    \"path\": \"/question\",\n"
@@ -191,7 +191,7 @@ public class CustomRuntimeEventLoopTest {
 					.run()) {
 
 			AWSCustomRuntime aws = userContext.getBean(AWSCustomRuntime.class);
-			String response = aws.exchange(API_EVENT).getPayload();
+			String response = aws.exchange(apiEvent).getPayload();
 			assertThat(response).contains("{\\\"latitude\\\":2.78,\\\"longitude\\\":41.34}");
 			assertThat(response).contains("{\\\"latitude\\\":3.78,\\\"longitude\\\":43.24}");
 		}
@@ -251,9 +251,7 @@ public class CustomRuntimeEventLoopTest {
 
 		@Bean
 		public Function<Flux<GeoLocation>, Flux<GeoLocation>> echoFlux() {
-			return flux -> flux.map(g -> {
-				return new GeoLocation(g.longitude(), g.latitude());
-			});
+			return flux -> flux.map(g -> new GeoLocation(g.longitude(), g.latitude()));
 		}
 	}
 

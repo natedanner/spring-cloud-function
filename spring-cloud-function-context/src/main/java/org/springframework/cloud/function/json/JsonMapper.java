@@ -41,7 +41,7 @@ import org.springframework.cloud.function.context.catalog.FunctionTypeUtils;
  */
 public abstract class JsonMapper {
 
-	private static Log logger = LogFactory.getLog(JsonMapper.class);
+	private static final Log logger = LogFactory.getLog(JsonMapper.class);
 
 	// we need this just to validate is String is JSON
 	private static final ObjectMapper mapper = new ObjectMapper().enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);

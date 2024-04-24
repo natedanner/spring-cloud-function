@@ -57,10 +57,10 @@ class AWSTypesMessageConverter extends JsonMessageConverter {
 	@Override
 	protected boolean canConvertFrom(Message<?> message, @Nullable Class<?> targetClass) {
 		if (message.getHeaders().containsKey(AWSLambdaUtils.AWS_API_GATEWAY)) {
-			return ((boolean) message.getHeaders().get(AWSLambdaUtils.AWS_API_GATEWAY));
+			return (boolean) message.getHeaders().get(AWSLambdaUtils.AWS_API_GATEWAY);
 		}
 		if (message.getHeaders().containsKey(AWSLambdaUtils.AWS_EVENT)) {
-			return ((boolean) message.getHeaders().get(AWSLambdaUtils.AWS_EVENT));
+			return (boolean) message.getHeaders().get(AWSLambdaUtils.AWS_EVENT);
 		}
 		//TODO Do we really need the ^^ above? It seems like the line below dows the trick
 		else if (targetClass.getPackage() != null &&
@@ -79,8 +79,7 @@ class AWSTypesMessageConverter extends JsonMessageConverter {
 		if (targetClass.getPackage() != null &&
 				targetClass.getPackage().getName().startsWith("com.amazonaws.services.lambda.runtime.events")) {
 			PojoSerializer<?> serializer = LambdaEventSerializers.serializerFor(targetClass, Thread.currentThread().getContextClassLoader());
-			Object event = serializer.fromJson(new ByteArrayInputStream((byte[]) message.getPayload()));
-			return event;
+			return serializer.fromJson(new ByteArrayInputStream((byte[]) message.getPayload()));
 		}
 		else {
 			Map<String, String> structMessage = this.jsonMapper.fromJson(message.getPayload(), Map.class);
@@ -95,18 +94,14 @@ class AWSTypesMessageConverter extends JsonMessageConverter {
 				else {
 					body = structMessage.get("body");
 				}
-				Object convertedResult = this.jsonMapper.fromJson(body, targetClass);
-				return convertedResult;
+				return this.jsonMapper.fromJson(body, targetClass);
 			}
 		}
 	}
 
 	@Override
 	protected boolean canConvertTo(Object payload, @Nullable MessageHeaders headers) {
-		if (!supportsMimeType(headers)) {
-			return false;
-		}
-		return true;
+		return !!supportsMimeType(headers);
 	}
 
 

@@ -111,7 +111,7 @@ public class ServerlessHttpServletRequest implements HttpServletRequest {
 	/** List of locales in descending order. */
 	private final LinkedList<Locale> locales = new LinkedList<>();
 
-	private boolean asyncStarted = false;
+	private boolean asyncStarted;
 
 	private boolean asyncSupported = true;
 
@@ -159,7 +159,7 @@ public class ServerlessHttpServletRequest implements HttpServletRequest {
 
 	private boolean requestedSessionIdFromCookie = true;
 
-	private boolean requestedSessionIdFromURL = false;
+	private boolean requestedSessionIdFromURL;
 
 	private final MultiValueMap<String, Part> parts = new LinkedMultiValueMap<>();
 
@@ -263,7 +263,7 @@ public class ServerlessHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public int getContentLength() {
-		return (this.content != null ? this.content.length : -1);
+		return this.content != null ? this.content.length : -1;
 	}
 
 	@Override
@@ -426,7 +426,7 @@ public class ServerlessHttpServletRequest implements HttpServletRequest {
 	public String getParameter(String name) {
 		Assert.notNull(name, "Parameter name must not be null");
 		String[] arr = this.parameters.get(name);
-		return (arr != null && arr.length > 0 ? arr[0] : null);
+		return arr != null && arr.length > 0 ? arr[0] : null;
 	}
 
 	@Override
@@ -485,7 +485,7 @@ public class ServerlessHttpServletRequest implements HttpServletRequest {
 
 		if (this.content != null) {
 			InputStream sourceStream = new ByteArrayInputStream(this.content);
-			Reader sourceReader = (this.characterEncoding != null)
+			Reader sourceReader = this.characterEncoding != null
 					? new InputStreamReader(sourceStream, this.characterEncoding)
 					: new InputStreamReader(sourceStream);
 			this.reader = new BufferedReader(sourceReader);

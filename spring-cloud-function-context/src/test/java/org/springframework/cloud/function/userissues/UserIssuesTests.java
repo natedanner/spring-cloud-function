@@ -51,8 +51,7 @@ public class UserIssuesTests {
 	private FunctionCatalog configureCatalog(Class<?>... configClass) {
 		ApplicationContext context = new SpringApplicationBuilder(configClass).run(
 				"--logging.level.org.springframework.cloud.function=DEBUG", "--spring.main.lazy-initialization=true");
-		FunctionCatalog catalog = context.getBean(FunctionCatalog.class);
-		return catalog;
+		return context.getBean(FunctionCatalog.class);
 	}
 
 	@BeforeEach
@@ -217,7 +216,7 @@ public class UserIssuesTests {
 
 		@Override
 		public Flux<Integer> apply(Flux<String> s) {
-			return s.map(v -> v.length());
+			return s.map(String::length);
 		}
 	}
 

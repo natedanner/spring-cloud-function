@@ -36,6 +36,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -80,8 +81,8 @@ public class PetStoreSpringAppConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http, SimpleFilter simpleFilter,
 			AnotherFilter anotherFilter) throws Exception {
 		http
-		.csrf(csrf -> csrf.disable())
-		.cors(cors -> cors.disable())
+		.csrf(AbstractHttpConfigurer::disable)
+		.cors(AbstractHttpConfigurer::disable)
 		.addFilterBefore(new GenericFilterBean() {
 			@Override
 			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

@@ -87,7 +87,7 @@ public class ServerlessAsyncContext implements AsyncContext {
 
 	@Override
 	public boolean hasOriginalRequestAndResponse() {
-		return (this.request instanceof ServerlessHttpServletRequest && this.response instanceof ServerlessHttpServletResponse);
+		return this.request instanceof ServerlessHttpServletRequest && this.response instanceof ServerlessHttpServletResponse;
 	}
 
 	@Override

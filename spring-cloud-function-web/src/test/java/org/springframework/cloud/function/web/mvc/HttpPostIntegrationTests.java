@@ -417,9 +417,8 @@ public class HttpPostIntegrationTests {
 
 		@Bean
 		public Consumer<String> bareUpdates() {
-			return value -> {
+			return value ->
 				this.list.add(value);
-			};
 		}
 
 		@Bean("not/a")

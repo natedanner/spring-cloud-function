@@ -39,12 +39,10 @@ public class RSocketCustomizerConfiguration {
 			@Override
 			public void customize(Builder strategies) {
 				strategies
-				.encoders(encoders -> {
-					encoders.add(0, new MessageAwareJsonEncoder(jsonMapper, true));
-				})
-				.decoders(decoders -> {
-					decoders.add(0, new MessageAwareJsonDecoder(jsonMapper));
-				});
+				.encoders(encoders ->
+					encoders.add(0, new MessageAwareJsonEncoder(jsonMapper, true)))
+				.decoders(decoders ->
+					decoders.add(0, new MessageAwareJsonDecoder(jsonMapper)));
 			}
 		};
 	}

@@ -54,13 +54,13 @@ import org.springframework.util.ClassUtils;
  */
 public class ServerlessServletContext implements ServletContext {
 
-	private Log logger = LogFactory.getLog(ServerlessServletContext.class);
+	private final Log logger = LogFactory.getLog(ServerlessServletContext.class);
 
-	private HashMap<String, Object> attributes = new HashMap<>();
+	private final HashMap<String, Object> attributes = new HashMap<>();
 
-	private Map<String, FilterRegistration> filterRegistrations = new HashMap<>();
+	private final Map<String, FilterRegistration> filterRegistrations = new HashMap<>();
 
-	private static Enumeration<String> EMPTY_ENUM = Collections.enumeration(new ArrayList<String>());
+	private static final Enumeration<String> EMPTY_ENUM = Collections.enumeration(new ArrayList<String>());
 
 	@Override
 	public Enumeration<String> getInitParameterNames() {

@@ -187,13 +187,10 @@ public class RoutingFunctionTests {
 
 		@Bean({ "employee" })
 		public Function<Message<Map<String, Object>>, Message<Map<String, Object>>> function() {
-			return request -> {
-				Message<Map<String, Object>> message = MessageBuilder
+			return request -> MessageBuilder
 						.withPayload(request.getPayload())
 						.setHeader("X-Content-Type", "application/xml")
 						.setHeader("foo", "bar").build();
-				return message;
-			};
 		}
 
 		@Bean
@@ -216,9 +213,8 @@ public class RoutingFunctionTests {
 
 		@Bean
 		public Consumer<Flux<String>> fluxconsumer() {
-			return flux -> flux.doOnNext(s -> {
-				System.out.println("Received: " + s);
-			}).subscribe();
+			return flux -> flux.doOnNext(s ->
+				System.out.println("Received: " + s)).subscribe();
 		}
 
 		@Bean

@@ -375,12 +375,10 @@ public class FunctionDeployerTests {
 		Tuple2<Flux<Message<byte[]>>, Flux<Message<byte[]>>> result = function.apply(Tuples.of(inputOne, inputTwo));
 		List<String> result1 = new ArrayList<>();
 		List<String> result2 = new ArrayList<>();
-		result.getT1().subscribe(message -> {
-			result1.add(new String(message.getPayload()));
-		});
-		result.getT2().subscribe(message -> {
-			result2.add(new String(message.getPayload()));
-		});
+		result.getT1().subscribe(message ->
+			result1.add(new String(message.getPayload())));
+		result.getT2().subscribe(message ->
+			result2.add(new String(message.getPayload())));
 
 		assertThat(result1.get(0)).isEqualTo("\"one\"");
 		assertThat(result1.get(1)).isEqualTo("\"two\"");
@@ -414,12 +412,10 @@ public class FunctionDeployerTests {
 		Tuple2<Flux<Message<byte[]>>, Flux<Message<byte[]>>> result = function.apply(Tuples.of(inputOne, inputTwo));
 		List<String> result1 = new ArrayList<>();
 		List<String> result2 = new ArrayList<>();
-		result.getT1().subscribe(message -> {
-			result1.add(new String(message.getPayload()));
-		});
-		result.getT2().subscribe(message -> {
-			result2.add(new String(message.getPayload()));
-		});
+		result.getT1().subscribe(message ->
+			result1.add(new String(message.getPayload())));
+		result.getT2().subscribe(message ->
+			result2.add(new String(message.getPayload())));
 
 		assertThat(result1.get(0)).isEqualTo("\"one\"");
 		assertThat(result1.get(1)).isEqualTo("\"two\"");

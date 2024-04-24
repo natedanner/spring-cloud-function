@@ -48,7 +48,7 @@ import org.springframework.util.StreamUtils;
  */
 public final class AWSLambdaUtils {
 
-	private static Log logger = LogFactory.getLog(AWSLambdaUtils.class);
+	private static final Log logger = LogFactory.getLog(AWSLambdaUtils.class);
 
 	static final String AWS_API_GATEWAY = "aws-api-gateway";
 
@@ -211,7 +211,7 @@ public final class AWSLambdaUtils {
 
 		byte[] responseBytes = responseMessage  == null ? "\"OK\"".getBytes() : extractPayload((Message<Object>) responseMessage, objectMapper);
 		if (requestMessage.getHeaders().containsKey(AWS_API_GATEWAY) && ((boolean) requestMessage.getHeaders().get(AWS_API_GATEWAY))) {
-			Map<String, Object> response = new HashMap<String, Object>();
+			Map<String, Object> response = new HashMap<>();
 			response.put(IS_BASE64_ENCODED, responseMessage != null && responseMessage.getHeaders().containsKey(IS_BASE64_ENCODED)
 					? responseMessage.getHeaders().get(IS_BASE64_ENCODED) : false);
 

@@ -71,7 +71,7 @@ public final class ServerlessMVC {
 	 */
 	public static String INIT_TIMEOUT = "contextInitTimeout";
 
-	private static Log LOG = LogFactory.getLog(ServerlessMVC.class);
+	private static final Log LOG = LogFactory.getLog(ServerlessMVC.class);
 
 	private volatile DispatcherServlet dispatcher;
 
