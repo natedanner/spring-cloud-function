@@ -1342,6 +1342,12 @@ public class SimpleFunctionRegistry implements FunctionRegistry {
 				if (collectionType == itemType) {
 					return message.getPayload();
 				}
+
+				if (collectionType != null
+						&& FunctionTypeUtils.getRawType(itemType).isAssignableFrom(collectionType.getClass())
+						&& FunctionTypeUtils.isMessage(type)) {
+					return message;
+				}
 			}
 
 			Object convertedInput = message.getPayload();
