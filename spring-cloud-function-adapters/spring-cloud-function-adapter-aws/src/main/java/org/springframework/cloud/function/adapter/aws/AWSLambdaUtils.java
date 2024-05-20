@@ -68,7 +68,7 @@ public final class AWSLambdaUtils {
 	 */
 	public static final String AWS_CONTEXT = "aws-context";
 
-	private final static JsonMasker masker = JsonMasker.INSTANCE();
+	private static final JsonMasker masker = JsonMasker.INSTANCE();
 
 	private AWSLambdaUtils() {
 

@@ -1491,9 +1491,7 @@ public class FunctionInvokerTests {
 	public static class BasicConfiguration {
 		@Bean
 		public Function<Message<String>, Message<String>> uppercase() {
-			return v -> {
-				return MessageBuilder.withPayload(v.getPayload().toUpperCase()).build();
-			};
+			return v -> MessageBuilder.withPayload(v.getPayload().toUpperCase()).build();
 		}
 	}
 

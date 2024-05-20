@@ -57,14 +57,14 @@ public final class JsonMasker {
 
 	}
 
-	public synchronized static JsonMasker INSTANCE() {
+	public static synchronized JsonMasker INSTANCE() {
 		if (jsonMasker == null) {
 			jsonMasker = new JsonMasker();
 		}
 		return jsonMasker;
 	}
 
-	public synchronized static JsonMasker INSTANCE(Set<String> keysToMask) {
+	public static synchronized JsonMasker INSTANCE(Set<String> keysToMask) {
 		INSTANCE().addKeys(keysToMask);
 		return jsonMasker;
 	}
